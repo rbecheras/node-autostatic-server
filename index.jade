@@ -1,0 +1,9 @@
+h1 #{dirname}
+
+ul
+  li
+    a(href='#{parentHref}') Parent
+-
+each file in files
+  li
+    a(href='#{file.href}') #{file.name}
