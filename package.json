@@ -26,8 +26,9 @@
   },
   "homepage": "https://github.com/rbecheras/node-autostatic-server#readme",
   "dependencies": {
-    "color": "^0.10.1",
+    "colors": "^1.1.2",
     "commander": "^2.8.1",
-    "express": "^4.13.3"
+    "express": "^4.13.3",
+    "open": "0.0.5"
   }
 }
