@@ -1,0 +1,28 @@
+{
+  "name": "autostatic-server",
+  "version": "0.1.0",
+  "description": "Automatic server for static files; serve instantly any folder for dev/working purposes (not for production!)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/rbecheras/node-autostatic-server.git"
+  },
+  "keywords": [
+    "node.js",
+    "static",
+    "server",
+    "open",
+    "source",
+    "dev",
+    "tool"
+  ],
+  "author": "Rémi Becheras <floss@remi-becheras.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/rbecheras/node-autostatic-server/issues"
+  },
+  "homepage": "https://github.com/rbecheras/node-autostatic-server#readme"
+}
