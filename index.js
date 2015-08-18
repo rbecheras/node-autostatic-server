@@ -35,6 +35,8 @@ var pkg = require('./package.json');
 var express = require('express');
 var cli = require('commander');
 var open = require('open');
+var fs = require('fs');
+var jade = require('jade');
 
 // Initializations
 var app = express();
@@ -67,15 +69,69 @@ info('* on port ' + options.port);
 if(!options.remote) info('* via ' + (options.browser || 'your default') + ' browser');
 info('**');
 
+app.use(function(req,res,next){
+  if (req.path==='/favicon.ico') log(req.path);
+  else info(req.path);
+  return next();
+});
 app.use(express.static(options.dir));
+
+app.use(function(req,res,next){
+  var filePath = __dirname + req.path;
+  require('fs').exists(filePath, function(exists){
+    if(!exists)  return res.status(404).send();
+
+    fs.stat(filePath, function(err,stats){
+      if (err) return next(err);
+      if (stats.isDirectory()) {
+        fs.readdir(filePath,function(err,files){
+          if (err) return next('Unable to read directory '+filePath);
+
+          var linkedFiles = [];
+          for(i in files){
+            var relPath = filePath.split(__dirname).join('');
+            var href = (relPath.length>1) ? relPath + '/' + files[i] : files[i];
+
+            linkedFiles.push({
+              name: files[i],
+              href: href
+            });
+          }
+
+          var relPath = filePath.split(__dirname).join('');
+          // res.status(200).jsonp(files);
+          var html = jade.renderFile(__dirname + '/index.jade',{
+            parentHref: '../',
+            dirname: relPath,
+            files: linkedFiles
+          });
+
+          res.status(200).send(html);
+        });
+      }
+    });
+  });
+});
+app.use(function(err,req,res,next){
+  info(res.status());
+  danger('Server Error');
+  console.error(err.message);
+  console.log(err);
+  console.error(err.stack);
+  return res.status(500).jsonp(err);
+});
 
 var server = app.listen(options.port,function(){
   if (!cli.remote){
     url = 'http://localhost:' + options.port;
-    open(url,options.browser);
+    open(url,options.browser).on('close',function(){
+      warn('browser closed by client.');
+      info('stopping server.');
+      process.exit();
+    })
   } else {
     url = 'http://' + server.address().address + ':' + options.port;
   }
-
   success('Server running... \nAccess to served static files at '+ url);
+
 });
