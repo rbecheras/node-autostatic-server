@@ -54,6 +54,7 @@ cli.version(pkg.version)
 .option('-b --browser <browser name>','browser which open served directory')
 .option('-p --port <port>','http port to serve to (default: 8080)')
 .option('-r --remote','don\'t automatically lauch browser on  localhost (useful if running on _r_emote host)')
+.option('-s --stopOnClose','automatically stop the server when user close the browser')
 .parse(process.argv);
 
 // Setting options
@@ -124,10 +125,17 @@ app.use(function(err,req,res,next){
 var server = app.listen(options.port,function(){
   if (!cli.remote){
     url = 'http://localhost:' + options.port;
-    open(url,options.browser).on('close',function(){
+    open(url,options.browser)
+    .on('error',function(err){
+      danger('Error');
+      console.log(err);
+    })
+    .on('close',function(){
       warn('browser closed by client.');
-      info('stopping server.');
-      process.exit();
+      if(cli.stopOnClose){
+        info('stopping server.');
+        process.exit();
+      }
     })
   } else {
     url = 'http://' + server.address().address + ':' + options.port;
