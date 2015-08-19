@@ -45,13 +45,15 @@ var tmp = '', stars = '', url='';
 var options = {
   port: process.env.PORT || 8080,
   dir: process.cwd(),
-  browser: undefined
+  browser: undefined,
+  hideDotted: false
 }
 
 // Defining and parsing CLI options
 cli.version(pkg.version)
 .option('-d --dir <directory>','directory to serve (default: .)')
 .option('-b --browser <browser name>','browser which open served directory')
+.option('-h --hide-dotted','hide dotted files (default: false)')
 .option('-p --port <port>','http port to serve to (default: 8080)')
 .option('-r --remote','don\'t automatically lauch browser on  localhost (useful if running on _r_emote host)')
 .option('-s --stop-on-close','automatically stop the server when user close the browser')
@@ -62,6 +64,7 @@ if (cli.port)       options.port = cli.port;
 if (cli.dir)        options.dir = cli.dir;
 if (cli.browser)    options.browser = cli.browser;
 if (cli.remote)     options.remote = cli.remote;
+if (cli.hideDotted) options.hideDotted = cli.hideDotted;
 
 // Logging CLI user friendly messages
 info(title('autostatic-server v' + pkg.version))
@@ -77,41 +80,49 @@ app.use(function(req,res,next){
   else info(req.path);
   return next();
 });
-app.use(express.static(options.dir));
+
+app.use(express.static(options.dir,{
+  dotfiles: (options.hideDotted) ? 'deny': 'allow'
+}));
 
 app.use(function(req,res,next){
   var filePath = options.dir + decodeURI(req.path);
   require('fs').exists(filePath, function(exists){
     if(!exists)  return res.status(404).send();
+    if(filePath[0]!=='.' || !options.hideDotted){
+      fs.stat(filePath, function(err,stats){
+        if (err) return next(err);
+        if (stats.isDirectory()) {
+          fs.readdir(filePath,function(err,files){
+            if (err) return next('Unable to read directory '+filePath);
+            var linkedFiles = [];
+            for(i in files){
+              var file = files[i];
 
-    fs.stat(filePath, function(err,stats){
-      if (err) return next(err);
-      if (stats.isDirectory()) {
-        fs.readdir(filePath,function(err,files){
-          if (err) return next('Unable to read directory '+filePath);
+              if(file[0]!=='.' || !options.hideDotted){
+                var relPath = filePath.split(options.dir).join('');
+                var href = (relPath.length>1) ? relPath + files[i] : files[i];
 
-          var linkedFiles = [];
-          for(i in files){
+                linkedFiles.push({
+                  name: files[i],
+                  href: href
+                });
+              }
+            }
+
             var relPath = filePath.split(options.dir).join('');
-            var href = (relPath.length>1) ? relPath + '/' + files[i] : files[i];
-
-            linkedFiles.push({
-              name: files[i],
-              href: href
+            var html = jade.renderFile(__dirname + '/index.jade',{
+              parentHref: '../',
+              dirname: relPath,
+              files: linkedFiles
             });
-          }
 
-          var relPath = filePath.split(options.dir).join('');
-          var html = jade.renderFile(__dirname + '/index.jade',{
-            parentHref: '../',
-            dirname: relPath,
-            files: linkedFiles
+            res.status(200).send(html);
           });
+        }
+      });
+    } else return next('NOTFOUND');
 
-          res.status(200).send(html);
-        });
-      }
-    });
   });
 });
 
