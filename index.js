@@ -80,7 +80,7 @@ app.use(function(req,res,next){
 app.use(express.static(options.dir));
 
 app.use(function(req,res,next){
-  var filePath = options.dir + req.path;
+  var filePath = options.dir + decodeURI(req.path);
   require('fs').exists(filePath, function(exists){
     if(!exists)  return res.status(404).send();
 
