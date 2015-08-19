@@ -44,7 +44,7 @@ var tmp = '', stars = '', url='';
 // Default options
 var options = {
   port: process.env.PORT || 8080,
-  dir: __dirname,
+  dir: process.cwd(),
   browser: undefined
 }
 
@@ -78,7 +78,7 @@ app.use(function(req,res,next){
 app.use(express.static(options.dir));
 
 app.use(function(req,res,next){
-  var filePath = __dirname + req.path;
+  var filePath = options.dir + req.path;
   require('fs').exists(filePath, function(exists){
     if(!exists)  return res.status(404).send();
 
@@ -90,7 +90,7 @@ app.use(function(req,res,next){
 
           var linkedFiles = [];
           for(i in files){
-            var relPath = filePath.split(__dirname).join('');
+            var relPath = filePath.split(options.dir).join('');
             var href = (relPath.length>1) ? relPath + '/' + files[i] : files[i];
 
             linkedFiles.push({
@@ -99,7 +99,7 @@ app.use(function(req,res,next){
             });
           }
 
-          var relPath = filePath.split(__dirname).join('');
+          var relPath = filePath.split(options.dir).join('');
           // res.status(200).jsonp(files);
           var html = jade.renderFile(__dirname + '/index.jade',{
             parentHref: '../',
@@ -113,6 +113,7 @@ app.use(function(req,res,next){
     });
   });
 });
+
 app.use(function(err,req,res,next){
   info(res.status());
   danger('Server Error');
@@ -141,5 +142,4 @@ var server = app.listen(options.port,function(){
     url = 'http://' + server.address().address + ':' + options.port;
   }
   success('Server running... \nAccess to served static files at '+ url);
-
 });
