@@ -69,6 +69,8 @@ info('* serving directory ' + options.dir);
 info('* on port ' + options.port);
 if(!options.remote) info('* via ' + (options.browser || 'your default') + ' browser');
 info('**');
+info('* run $ autostatic --help to get command line option informations');
+info('**');
 
 app.use(function(req,res,next){
   if (req.path==='/favicon.ico') log(req.path);
