@@ -1,6 +1,6 @@
 {
   "name": "autostatic-server",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Automatic server for static files; serve instantly any folder for dev/working purposes (not for production!)",
   "main": "index.js",
   "scripts": {
