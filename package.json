@@ -13,9 +13,6 @@
     "type": "git",
     "url": "git+ssh://git@github.com/rbecheras/node-autostatic-server.git"
   },
-  "publishConfig": {
-    "registry": "https://registry.npmjs.org/"
-  },
   "preferGlobal": true,
   "keywords": [
     "node.js",
