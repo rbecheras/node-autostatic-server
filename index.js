@@ -102,7 +102,6 @@ app.use(function(req,res,next){
           }
 
           var relPath = filePath.split(options.dir).join('');
-          // res.status(200).jsonp(files);
           var html = jade.renderFile(__dirname + '/index.jade',{
             parentHref: '../',
             dirname: relPath,
