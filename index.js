@@ -54,7 +54,7 @@ cli.version(pkg.version)
 .option('-b --browser <browser name>','browser which open served directory')
 .option('-p --port <port>','http port to serve to (default: 8080)')
 .option('-r --remote','don\'t automatically lauch browser on  localhost (useful if running on _r_emote host)')
-.option('-s --stopOnClose','automatically stop the server when user close the browser')
+.option('-s --stop-on-close','automatically stop the server when user close the browser')
 .parse(process.argv);
 
 // Setting options
