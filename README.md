@@ -1,7 +1,19 @@
 # node-autostatic-server
 
 `autostatic-server` is a node application running on command line interface (CLI).
-It provide a handy 'portable' static node server. It is almost usefull to serve any folder wich you want to serve during your daily development works.
+
+**It provides a handy 'portable' static node server. It is almost usefull to serve any folder wich you want to serve during your daily development works.**
+
+> You can run as much `autostatic` server instances as you need in the same time. Just, don't forget to specify a different port for each one thanks to `-p` or `--port` CLI option. For example: 
+>
+>     // serve current directory on port 8080
+>     $ autostatic
+>     // serve user $HOME directory on port 1024
+>     $ autostatic --dir ~/ --port 1024
+>     // serve current directory on port 3000
+>     $ autostatic --dir /var/www --port 3000
+>
+>     // etc ...
 
 ## Example
 
