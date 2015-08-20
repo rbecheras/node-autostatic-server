@@ -1,19 +1,36 @@
-// Defining helper functions
+/**
+ * logs informations in blue
+ */
 function info(message){
   console.log(message.blue);
 }
+/**
+ * logs alert/danger in red
+ */
 function danger(message){
   console.log(message.red);
 }
+/**
+ * logs warnings in yellow and bold
+ */
 function warn(message){
   console.log(message.yellow.bold);
 }
+/**
+ * logs success in green and bold
+ */
 function success(message){
   console.log(message.green.bold);
 }
+/**
+ * log simple messsages in default format
+ */
 function log(message){
   console.log(message);
 }
+/**
+ * display title in CLI header surrounded by stars
+ */
 function title(message){
   var title='';
   function getStars(messsage){
@@ -75,16 +92,19 @@ info('**');
 info('* run $ autostatic --help to get command line option informations');
 info('**');
 
+// log requests in blue exept if its /favicon.ico request
 app.use(function(req,res,next){
   if (req.path==='/favicon.ico') log(req.path);
   else info(req.path);
   return next();
 });
 
+// serve the files of the folder defined in options
 app.use(express.static(options.dir,{
   dotfiles: (options.hideDotted) ? 'deny': 'allow'
 }));
 
+// serve an index HTML page filled by links to first level children files if request is pointing to a folder
 app.use(function(req,res,next){
   var filePath = options.dir + decodeURI(req.path);
   require('fs').exists(filePath, function(exists){
@@ -126,6 +146,7 @@ app.use(function(req,res,next){
   });
 });
 
+// Add a simple error handler
 app.use(function(err,req,res,next){
   info(res.status());
   danger('Server Error');
@@ -135,6 +156,7 @@ app.use(function(err,req,res,next){
   return res.status(500).jsonp(err);
 });
 
+// Run the server, listen on configured port, and launch (or not) the configured browser
 var server = app.listen(options.port,function(){
   if (!cli.remote){
     url = 'http://localhost:' + options.port;
