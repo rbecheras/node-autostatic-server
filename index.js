@@ -132,6 +132,7 @@ app.use(function(req,res,next){
 
             var relPath = filePath.split(options.dir).join('');
             var html = jade.renderFile(__dirname + '/index.jade',{
+              documentRoot: process.cwd(),
               parentHref: '../',
               dirname: relPath,
               files: linkedFiles
