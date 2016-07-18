@@ -35,6 +35,7 @@
   "dependencies": {
     "colors": "^1.1.2",
     "commander": "^2.8.1",
+    "cors": "^2.7.1",
     "express": "^4.13.3",
     "jade": "^1.11.0",
     "open": "0.0.5"
