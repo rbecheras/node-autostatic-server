@@ -4,7 +4,7 @@
 
 **It provides a handy 'portable' static node server. It is almost usefull to serve any folder wich you want to serve during your daily development works.**
 
-> You can run as much `autostatic` server instances as you need in the same time. Just, don't forget to specify a different port for each one thanks to `-p` or `--port` CLI option. For example: 
+> You can run as much `autostatic` server instances as you need in the same time. Just, don't forget to specify a different port for each one thanks to `-p` or `--port` CLI option. For example:
 >
 >     // serve current directory on port 8080
 >     $ autostatic
@@ -59,6 +59,7 @@ will show you the options also listed bellow.
       -p --port <port>             http port to serve to (default: 8080)
       -r --remote                  don't automatically lauch browser on  localhost (useful if running on remote host)
       -s --stop-on-close           automatically stop the server when user close the browser
+      -c --cors                    enable Cross-Origin-Resource-Sharing for all served static files
 
 
 Note:
