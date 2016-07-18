@@ -54,6 +54,7 @@ var cli = require('commander');
 var open = require('open');
 var fs = require('fs');
 var jade = require('jade');
+var cors = require('cors');
 
 // Initializations
 var app = express();
@@ -74,6 +75,7 @@ cli.version(pkg.version)
 .option('-p --port <port>','http port to serve to (default: 8080)')
 .option('-r --remote','don\'t automatically lauch browser on  localhost (useful if running on _r_emote host)')
 .option('-s --stop-on-close','automatically stop the server when user close the browser')
+.option('-c --cors','enable Cross-Origin-Resource-Sharing for all served static files')
 .parse(process.argv);
 
 // Setting options
@@ -82,12 +84,17 @@ if (cli.dir)        options.dir = cli.dir;
 if (cli.browser)    options.browser = cli.browser;
 if (cli.remote)     options.remote = cli.remote;
 if (cli.hideDotted) options.hideDotted = cli.hideDotted;
+if (cli.cors)       options.cors = cli.cors
 
 // Logging CLI user friendly messages
 info(title('autostatic-server v' + pkg.version))
 info('* serving directory ' + options.dir);
 info('* on port ' + options.port);
 if(!options.remote) info('* via ' + (options.browser || 'your default') + ' browser');
+if (options.cors) {
+  info('* ... with CORS enabled for all served static files');
+  app.use(cors());
+}
 info('**');
 info('* run $ autostatic --help to get command line option informations');
 info('**');
